@@ -13,18 +13,22 @@
     color: #333;
     text-align: center;
     padding: 20px;
-    transition: background 0.3s, color 0.3s;
+    transition: background 0.5s ease, color 0.5s ease, background-image 0.5s ease;
+    background-size: cover;
+    background-position: center;
   }
 
   .hidden { display: none; }
 
-  #toggle-theme {
+  #toggle-theme, #open-settings {
     cursor: pointer;
     font-size: 24px;
     position: absolute;
     top: 10px;
-    right: 10px;
   }
+
+  #toggle-theme { right: 10px; }
+  #open-settings { left: 10px; }
 
   #search {
     margin: 20px;
@@ -32,9 +36,9 @@
     width: 200px;
     border-radius: 10px;
     border: 1px solid #ccc;
-    transition: box-shadow 0.3s ease, transform 0.3s ease, background 0.3s, color 0.3s;
     background: white;
     color: #333;
+    transition: all 0.3s ease;
   }
 
   #search:focus {
@@ -46,27 +50,37 @@
     padding: 10px;
     border-bottom: 1px solid #ccc;
     border-radius: 5px;
-    cursor: default;
-    transition: background 0.3s, color 0.3s;
     background: #fff;
     color: #333;
+    transition: background 0.3s, color 0.3s;
   }
 
   #word-list div:hover {
     background: #ddd;
   }
 
-  #auth-section, #content {
+  #auth-section, #content, #settings-panel {
     background: white;
     padding: 20px;
     border-radius: 15px;
     max-width: 400px;
-    margin: auto;
-    transition: background 0.3s, color 0.3s;
+    margin: 20px auto;
+    transition: background 0.5s ease, color 0.5s ease, background-image 0.5s ease;
   }
 
-  #auth-section input, #auth-section button, #search {
-    transition: background 0.3s, color 0.3s, border 0.3s;
+  #settings-panel {
+    display: none;
+    text-align: left;
+  }
+
+  #settings-panel label {
+    display: block;
+    margin: 10px 0;
+  }
+
+  input[type="file"] {
+    display: block;
+    margin-top: 5px;
   }
 
   /* DARK MODE */
@@ -75,7 +89,9 @@
     color: #ddd;
   }
 
-  .dark-mode #auth-section, .dark-mode #content {
+  .dark-mode #auth-section, 
+  .dark-mode #content, 
+  .dark-mode #settings-panel {
     background: #1f1f1f;
     color: #ddd;
   }
@@ -101,6 +117,21 @@
   .dark-mode #error-message {
     color: #ff5555;
   }
+
+  /* ANIME MODE */
+  .anime-mode {
+    background: url('file:///C:/Users/nonoh/Downloads/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.webp') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+  }
+
+  .anime-mode #auth-section, 
+  .anime-mode #content, 
+  .anime-mode #settings-panel {
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+  }
+
 </style>
 </head>
 <body>
@@ -113,22 +144,38 @@
 </div>
 
 <div id="content" class="hidden">
+  <span id="open-settings"><i class="fas fa-cog"></i></span>
   <span id="toggle-theme"><i class="fas fa-moon"></i></span>
+
   <h1>Welcome to the language list of Bubbele</h1>
   <small>be a good boy for mommy :3</small>
+
   <input type="text" id="search" onkeyup="searchWords()" placeholder="Search words..." />
   <div id="word-list"></div>
+
   <small>
     All words have been verified by either <b>brug_nubmer</b>, <b>jmart89000</b>, or <b>masternorac/glitch</b> :3  
     <br>Server link btw :) <a href="https://discord.gg/XQRcY5YYRd" target="_blank">Join Discord Server</a>
   </small>
 </div>
 
+<div id="settings-panel">
+  <h3>⚙️ Settings</h3>
+  <label><input type="radio" name="theme" value="light" checked> Light Mode</label>
+  <label><input type="radio" name="theme" value="dark"> Dark Mode</label>
+  <label><input type="radio" name="theme" value="anime"> Anime Mode</label>
+
+  <label>
+    Custom Background Image:
+    <input type="file" id="bg-upload" accept="image/*">
+  </label>
+  <button onclick="closeSettings()">Close</button>
+</div>
+
 <script>
   const PASSWORD = "boykisser";
-
   const wordList = [
-    { word: "ki", definition: "Hi", pronounced: "KI KI MA MA I AM FIRE JASON (forsaken reference :3 cuz)" },
+    { word: "ki", definition: "Hi", pronounced: "KI KI MA MA I AM FIRE JASON" },
     { word: "Shu", definition: "You", pronounced: "shh - ou" },
     { word: "karata", definition: "How are you doing", pronounced: "kara - ta" },
     { word: "Si", definition: "Good", pronounced: "See" },
@@ -144,20 +191,11 @@
     { word: "onimi", definition: "Anime", pronounced: "on - im - me" },
     { word: "koa", definition: "What", pronounced: "co - ah" },
     { word: "nokoro", definition: "Dipshit", pronounced: "No - ko - or - o" },
-    { word: "hishquendelag", definition: "Shut the fuck up / Stfu", pronounced: "heish - kwin - dalag" },
+    { word: "hishquendelag", definition: "Shut the fuck up", pronounced: "heish - kwin - dalag" },
     { word: "Kwins", definition: "Twin", pronounced: "kw - in (The S is silent)" },
-    { word: "vrko", definition: "KYS / Kill yourself", pronounced: "vur - ko" },
+    { word: "vrko", definition: "KYS", pronounced: "vur - ko" },
     { word: "bau", definition: "Team", pronounced: "ba - ow" },
     { word: "idi", definition: "No", pronounced: "id - ie" },
-    { word: "klydinagoolag", definition: "lemme say it in spanish for you", pronounced: "kly - din - a - goo - lag" },
-    { word: "kly", definition: "lemme", pronounced: "ki - ligh" },
-    { word: "vak", definition: "Butter", pronounced: "va - ck" },
-    { word: "kizel", definition: "Shut your bitch ass up", pronounced: "ki - zel" },
-    { word: "klee", definition: "Need", pronounced: "klee" },
-    { word: "Como", definition: "Femboy", pronounced: "ko - mo" },
-    { word: "ko", definition: "to", pronounced: "ko" },
-    { word: "leck", definition: "shut", pronounced: "le - ck" },
-    { word: "ek", definition: "up", pronounced: "eh - k" },
     { word: "slumk", definition: "slut", pronounced: "sl - um - k" }
   ];
 
@@ -194,7 +232,41 @@
   const toggleTheme = document.getElementById("toggle-theme");
   toggleTheme.addEventListener("click", () => {
     const isDark = document.body.classList.toggle("dark-mode");
+    document.body.classList.remove("anime-mode");
     toggleTheme.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+  });
+
+  // Settings Menu
+  const settingsPanel = document.getElementById("settings-panel");
+  document.getElementById("open-settings").onclick = () => {
+    settingsPanel.style.display = "block";
+  };
+
+  function closeSettings() {
+    settingsPanel.style.display = "none";
+  }
+
+  // Theme radio buttons
+  document.querySelectorAll('input[name="theme"]').forEach(radio => {
+    radio.addEventListener("change", (e) => {
+      const val = e.target.value;
+      document.body.classList.remove("dark-mode", "anime-mode");
+      document.body.style.backgroundImage = "";
+      if (val === "dark") document.body.classList.add("dark-mode");
+      else if (val === "anime") document.body.classList.add("anime-mode");
+    });
+  });
+
+  // Custom background upload
+  document.getElementById("bg-upload").addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.body.style.backgroundImage = `url('${e.target.result}')`;
+      };
+      reader.readAsDataURL(file);
+    }
   });
 </script>
 
